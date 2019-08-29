@@ -24,6 +24,31 @@
   when: postfix_relay_to_mailhog
   notify: restart postfix
 
+- name: Get TLS CA filename
+  set_fact:
+    postfix_smtp_tls_ca_filename: "{{ postfix_smtp_tls_ca_url | basename }}"
+  when: postfix_smtp_tls_ca_url is defined
+
+- name: Ensure postfix ssl directory exists
+  file:
+    path: "{{ postfix_ssl_directory }}"
+    state: directory
+    recurse: true
+  when: postfix_smtp_tls_ca_url is defined
+
+- name: Download SMTP TLS CA certificate
+  get_url:
+    url: "{{ postfix_smtp_tls_ca_url }}"
+    dest: "{{ postfix_ssl_directory }}/"
+  when: postfix_smtp_tls_ca_url is defined
+
+- name: Enable SMTP TLS CA certificate
+  lineinfile:
+    dest: "{{ postfix_config_file }}"
+    line: "smtp_tls_CAfile = {{ postfix_ssl_directory }}/{{ postfix_smtp_tls_ca_filename }}"
+  when: postfix_smtp_tls_ca_url is defined
+  notify: restart postfix
+
 - name: Ensure postfix is started and enabled at boot.
   service:
     name: postfix

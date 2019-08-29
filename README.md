@@ -13,6 +13,8 @@ If you're using this as an SMTP relay server, you will need to do that on your o
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
     postfix_config_file: /etc/postfix/main.cf
+    postfix_ssl_directory: /etc/postfix/ssl
+    postfix_smtp_tls_ca_url: [not set by default]
 
 The path to the Postfix `main.cf` configuration file.
 
@@ -29,6 +31,11 @@ Options for values `inet_interfaces` and `inet_protocols` in the `main.cf` file.
     postfix_relay_to_mailhog: no
 
 Option to enable relaying to MailHog on the localhost, port 1025. Requires [MailHog](https://github.com/geerlingguy/ansible-role-mailhog) to be installed on localhost.
+
+    postfix_ssl_directory: /etc/postfix/ssl
+    postfix_smtp_tls_ca_url: ...
+
+Options to make use of an SSL CA certificate for SMTP TLS.
 
 ## Dependencies
 
